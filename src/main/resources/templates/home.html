@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hey IssueHub!</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f6f8fa;
+            color: #24292e;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .modal {
+            display: flex;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-info {
+            display: flex;
+            justify-content: space-between; /* This will space out your info items */
+            font-size: 0.8em; /* Smaller font size for info text */
+            margin-bottom: 10px; /* Adds some space before the detail section */
+        }
+        .modal-content {
+            background-color: #ffffff;
+            color: #333;
+            padding: 20px;
+            border-radius: 20px;
+            width: 60%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            max-width: 800px; /* Adjusted max-width for large screens */
+            margin: 10vh auto; /* Centered in the view with some top margin */
+        }
+        .modal-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7em; /* Make these texts smaller */
+            margin-bottom: 1em; /* Spacing before the detail section */
+            align-items: center;
+        }
+        .modal-info div {
+            flex: 1;
+            padding: 0 5px; /* Give some space around each info item */
+            text-align: center;
+        }
+        #modalDetail {
+            /* Increased font size for readability and larger area for content */
+            font-size: 0.85em;
+            margin-top: 0.5em;
+            overflow-y: auto;
+            flex-grow: 1; /* Allow this area to grow and fill available space */
+        }
+        .modal-content h2, .modal-content p {
+            font-size: 0.9em; /* Adjust as needed */
+        }
+        .modal-info-item {
+            /* Adjustments for each item */
+            margin: 0 5px;
+            text-align: center;
+        }
+        .modal-info-container {
+            display: flex;
+            width: 100%;
+            justify-content: space-around; /* Distribute space evenly around the info items */
+            margin-bottom: 0.5em;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: #aab8c2; /* A light gray color */
+            cursor: pointer;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .modal-header div {
+            font-size: 0.6em;
+            color: #555;
+            text-align: center;
+            padding: 0;
+        }
+        #modalDetail {
+            font-size: 0.9em;
+            color: #586069;
+            text-align: left; /* Align text to the left for readability */
+            overflow: visible; /* Removed the auto scroll */
+        }
+
+        /* Adjust title font size */
+        #modalTitle {
+            font-size: 1em;
+            color: #24292e;
+            margin-bottom: 10px;
+        }
+
+        /* Button styling */
+        .button {
+            background-color: #2ea44f; /* Button background */
+            color: #ffffff; /* Button text color */
+            border: none;
+            border-radius: 5px;
+            padding: 10px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1em;
+        }
+
+        .button:hover {
+            background-color: #22863a; /* Darken the button on hover */
+        }
+
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background-color: #fff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        .issue-card {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .issue-card:last-child {
+            border-bottom: none;
+        }
+
+        .issue-card h2 {
+            font-size: 16px;
+            margin: 0;
+            font-weight: 600;
+            flex-grow: 1;
+        }
+
+        .issue-card p {
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .label {
+            display: inline-block;
+            padding: 0.2em 0.6em;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 2rem;
+        }
+
+        .status-open {
+            background-color: #28a745;
+        }
+
+        .status-closed {
+            background-color: #d73a49;
+        }
+
+        .status-other {
+            background-color: #6f42c1;
+        }
+
+        .search-box {
+            margin-bottom: 10px;
+        }
+
+        .search-input {
+            width: 50%; /* Smaller width as per feedback */
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .category-menu {
+            display: flex;
+            flex-wrap: wrap; /* Allows items to wrap onto the next line */
+            list-style: none;
+            padding-left: 0;
+            margin-top: 0;
+            padding-bottom: 10px; /* Adds padding to the bottom for better spacing when wrapped */
+        }
+
+        .category-menu li {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 5px 8px; /* Reduced padding to decrease size */
+            font-size: 12px; /* Optionally reduce font size */
+            background-color: #eee;
+            border-radius: 15px;
+        }
+
+        .horizontal-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            overflow-y: hidden; /* Hide vertical scrollbar that might appear due to wrapping */
+        }
+        /* Add these styles to your <style> section in home.html */
+        .readme-preview {
+            padding: 20px;
+            background-color: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            margin-bottom: 20px; /* Space between preview and issues list */
+            display: none; /* Initially hide the preview */
+        }
+        .readme-preview div {
+            padding: 10px; /* Add padding */
+            background-color: #e1e4e8; /* Light gray background */
+            margin: 8px 0; /* Margin for spacing */
+            border-radius: 6px; /* Rounded corners */
+            text-align: center; /* Center text */
+            font-weight: bold; /* Make text bold */
+        }
+        .readme-preview p {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #24292e;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>IssueHub</h1>
+    <div class="search-box">
+        <input type="text" id="category-search" placeholder="Search categories..." aria-label="Search categories" class="search-input">
+    </div>
+
+    <ul id="category-menu" class="category-menu horizontal-scroll"></ul>
+    <div id="readmePreview" class="readme-preview">
+    </div>
+    <div id="issues"></div>
+</div>
+<div id="issueModal" class="modal">
+    <div class="modal-content">
+        <h2 id="modalTitle">Issue Title Here</h2>
+        <div class="modal-header">
+            <div id="modalRepo"></div>
+            <div id="modalStatus"></div>
+            <div id="modalOwner"></div>
+            <div id="modalUpdateDate"></div>
+        </div>
+        <div id="modalDetail">
+            Issue details here...
+        </div>
+        <span class="close">&times;</span>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

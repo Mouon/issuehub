@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/every?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: ${DB_LOCAL_PASSWD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    open-in-view: false
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties.transaction.timeout.ms: 60000
+      transaction-id-prefix: txn-
+
+    consumer:
+      group-id: github-data-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+  org.springframework.web : DEBUG
+  org.springframework.web.socket : DEBUG
+  org.apache.kafka: DEBUG
+  org.springframework.kafka: DEBUG
+github:
+  api:
+    token: ${GIT_TOKEN}
+    event.topic: github-events
+server:
+  port: 9000
