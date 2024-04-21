@@ -3,11 +3,12 @@
 ### Introduction
 Issuehub는 개인 프로젝트로 개발자들이 인기 있는 오픈 소스 프로젝트의 이슈를 쉽게 확인할 수 있는 플랫폼입니다. Kafka의 강력한 메시지 스트리밍 기능과 Spring Boot의 스케줄링 기능을 활용하여, 
 Issuehub는 GitHub 저장소로부터 지속적인 업데이트를 제공합니다. [ 스프링부트와 백엔드 개발을 연습하기 위한 프로젝트입니다.]
-<img width="1624" alt="스크린샷 2024-04-21 오후 4 12 26" src="https://github.com/Mouon/everysource/assets/137624597/97a19f9c-19f5-479d-b5d7-fda7b61a20d6">
+<img width="1624" alt="스크린샷 2024-04-21 오후 4 12 26" src="https://github.com/Mouon/issuehub/assets/137624597/2d552f9e-6106-4e38-b438-c92caf893480">
+<img width="1624" alt="스크린샷 2024-04-21 오후 4 12 38" src="https://github.com/Mouon/issuehub/assets/137624597/4999084b-94c2-48f1-8175-45594b684b1b">
 
-<img width="1624" alt="스크린샷 2024-04-21 오후 4 12 38" src="https://github.com/Mouon/everysource/assets/137624597/012ef396-8262-40e6-95d0-905073795d7d">
+<img width="1624" alt="스크린샷 2024-04-21 오후 4 13 14" src="https://github.com/Mouon/issuehub/assets/137624597/85ee4bc2-6705-46ef-ae86-aeeb7c2bca52">
 
-<img width="1624" alt="스크린샷 2024-04-21 오후 4 13 14" src="https://github.com/Mouon/everysource/assets/137624597/ecdf1bab-d6e5-4d39-a67e-4adc02ad5aa8">
+
 
 ### Features
 - **실시간 업데이트**:  저장소의 최신 이슈를 계속해서 업데이트합니다.
@@ -60,12 +61,14 @@ Kafka Consumer는 Kafka 토픽을 구독하고 메시지를 처리합니다. 이
 - **유연성**: Spring Boot의 스케줄러는 프로젝트 요구에 따라 데이터 가져오기 작업을 유연하게 예약할 수 있는 유연성을 제공합니다.
 
 ### Architecture
-<img width="1382" alt="스크린샷 2024-04-21 오후 4 36 18" src="https://github.com/Mouon/everysource/assets/137624597/8c9b94f3-ae7b-447d-95ed-d58cf5dbb68d">
+<img width="1382" alt="스크린샷 2024-04-21 오후 5 03 19" src="https://github.com/Mouon/issuehub/assets/137624597/49927611-6c41-46b8-b5ac-f6a813813bb6">
 
-![IKgHBbE3QS](https://github.com/Mouon/everysource/assets/137624597/bf1129f6-907e-4efc-ae47-80e519a49b24)
+![IKgHBbE3QS](https://github.com/Mouon/issuehub/assets/137624597/9da58e30-220e-48f8-b4d9-2e73d86938e6)
+
 
 
 ### Sequence Diagram
-<img width="752" alt="스크린샷 2024-04-21 오후 3 17 54" src="https://github.com/Mouon/everysource/assets/137624597/17080b23-c72f-4e30-9fa9-a8042b1a1569">
+<img width="752" alt="스크린샷 2024-04-21 오후 3 17 54" src="https://github.com/Mouon/issuehub/assets/137624597/3679f28f-1aba-47a7-b6d8-4dcc9d0d26f3">
+
 
 
