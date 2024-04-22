@@ -3,13 +3,15 @@ package com.everysource.everysource.dto;
 import com.everysource.everysource.domain.Issue;
 import com.everysource.everysource.domain.Project;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
 @Getter @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class ProjectReadmeDetailDTO {
     private Long id;
 
@@ -26,4 +28,17 @@ public class ProjectReadmeDetailDTO {
             this.content=i.getContent();
         });
     }
+
+    public ProjectReadmeDetailDTO(Project project) {
+        if (project != null) {
+            this.id = project.getId();
+            this.owner = project.getOwner();
+            this.repo = project.getRepo();
+            this.content = project.getContent();
+        }
+    }
+
+
+
+
 }

@@ -1,8 +1,8 @@
 package com.everysource.everysource.controller;
 
-import com.everysource.everysource.domain.Issue;
 import com.everysource.everysource.dto.IssueDTO;
 import com.everysource.everysource.dto.IssueListDTO;
+import com.everysource.everysource.dto.IssueStatic;
 import com.everysource.everysource.repository.IssueRepository;
 import com.everysource.everysource.service.GitHubDataService;
 import com.everysource.everysource.service.IssueService;

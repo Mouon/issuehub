@@ -4,23 +4,23 @@ import com.everysource.everysource.domain.Issue;
 import com.everysource.everysource.domain.Project;
 import com.everysource.everysource.dto.ProjectReadmeDetailDTO;
 import com.everysource.everysource.repository.IssueRepository;
+import com.everysource.everysource.repository.ProjectReactiveRepository;
 import com.everysource.everysource.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -28,8 +28,9 @@ import java.util.*;
 public class GitHubDataService {
     private final IssueRepository issueRepository;
     private final ProjectRepository projectRepository;
-    private final RestTemplate restTemplate;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ProjectReactiveRepository projectReactiveRepository;
+
+    private final WebClient webClient = WebClient.create();
 
     @Value("${github.api.token}")
     private String token;
@@ -41,58 +42,61 @@ public class GitHubDataService {
         return headers;
     }
 
-
-
-    @Transactional("jpaTransactionManager")
-    public void fetchIssues(String owner, String repo) {
-        try {
-            log.info("{}/{}에 대한 이슈를 가져오는 중입니다.", owner, repo);
-            String issuesUrl = "https://api.github.com/repos/" + owner + "/" + repo + "/issues";
-            ResponseEntity<Issue[]> response = restTemplate.exchange(issuesUrl, HttpMethod.GET, new HttpEntity<>(createHeaders()), Issue[].class);
-            Arrays.stream(response.getBody()).forEach(issue -> {
-                issue.setOwner(owner);
-                issue.setRepo(repo);
-                issueRepository.save(issue);
-                kafkaTemplate.send("github-issues", owner + "/" + repo, issue.toString());
-                log.info("Issue sent to Kafka");
-            });
-            log.debug("Transaction completed for fetchIssues");
-        } catch (Exception e) {
-            log.error("{}/{} 이슈 가져오기 중 에러 발생", owner, repo, e);
-            throw e;
-        }
+    @Transactional("transactionManager")
+    public Mono<Project> findByRepo(String repo) {
+        return Mono.justOrEmpty(projectRepository.getContentByRepo(repo));
     }
 
     @Transactional("jpaTransactionManager")
-    public ProjectReadmeDetailDTO fetchReadme(String owner, String repo) {
-        try {
-            log.info("{}/{}에 대한 README를 가져오는 중입니다.", owner, repo);
-            String readmeUrl = "https://api.github.com/repos/" + owner + "/" + repo + "/readme";
-            String readmeContent = fetchReadmeContent(readmeUrl);
-            Project project = new Project();
-            project.setContent(readmeContent);
-            project.setRepo(repo);
-            project.setOwner(owner);
-            projectRepository.save(project);
-            kafkaTemplate.send("github-readme", owner + "/" + repo, project.toString());
-            return new ProjectReadmeDetailDTO(Optional.of(project));
-        } catch (Exception e) {
-            log.error("{}/{} README 가져오기 실패", owner, repo, e);
-            return null;
-        }
+    public Flux<Issue> fetchIssues(String owner, String repo) {
+        String issuesUrl = "https://api.github.com/repos/" + owner + "/" + repo + "/issues";
+        return webClient.get()
+                .uri(issuesUrl)
+                .headers(headers -> headers.setBearerAuth(token))
+                .retrieve()
+                .bodyToFlux(Issue.class)
+                .doOnNext(issue -> {
+                    issue.setOwner(owner);
+                    issue.setRepo(repo);
+                    issueRepository.save(issue);
+                    log.info("Issue saved and sent to internal processing (if necessary)");
+                })
+                .doOnError(error -> log.error("Failed to fetch issues for {}/{}", owner, repo, error));
     }
 
-    public String fetchReadmeContent(String readmeUrl) throws Exception {
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                readmeUrl, HttpMethod.GET, new HttpEntity<>(createHeaders()), new ParameterizedTypeReference<>() {}
-        );
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            String contentBase64 = (String) response.getBody().get("content");
-            byte[] decodedBytes = Base64.getMimeDecoder().decode(contentBase64.replace("\n", "").trim());
-            return new String(decodedBytes, StandardCharsets.UTF_8);
-        } else {
-            throw new HttpClientErrorException(response.getStatusCode(), "GitHub API error: " + response.getStatusCode().toString());
-        }
+    @Transactional("transactionManager")
+    public Mono<ProjectReadmeDetailDTO> fetchReadme(String owner, String repo) {
+        String readmeUrl = "https://api.github.com/repos/" + owner + "/" + repo + "/readme";
+        return fetchReadmeContent(readmeUrl)
+                .flatMap(readmeContent ->
+                        projectReactiveRepository.findByRepo(repo)
+                                .map(project -> {
+                                    project.setContent(readmeContent);
+                                    project.setOwner(owner);
+                                    return project;
+                                })
+                                .switchIfEmpty(Mono.defer(() -> {
+                                    Project newProject = new Project();
+                                    newProject.setRepo(repo);
+                                    newProject.setOwner(owner);
+                                    newProject.setContent(readmeContent);
+                                    return Mono.just(newProject);
+                                }))
+                                .flatMap(projectReactiveRepository::save) // Ensure this save method is available in reactive repository
+                                .map(ProjectReadmeDetailDTO::new)
+                )
+                .doOnError(error -> log.error("Failed to fetch README for {}/{}", owner, repo, error));
     }
 
+
+
+    private Mono<String> fetchReadmeContent(String readmeUrl) {
+        return webClient.get()
+                .uri(readmeUrl)
+                .headers(headers -> headers.setBearerAuth(token))
+                .retrieve()
+                .bodyToMono(Map.class)
+                .map(response -> new String(Base64.getMimeDecoder().decode(((String) response.get("content")).replace("\n", "").trim()), StandardCharsets.UTF_8))
+                .doOnError(error -> log.error("Error fetching README content", error));
+    }
 }

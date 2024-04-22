@@ -31,9 +31,7 @@ public class ProjectService {
         Project project = projectRepository.getContentByRepo(repo);
         return new ProjectReadmeDetailDTO(Optional.ofNullable(project));
     }
-    private void updateIssuesForProject(String owner, String repo) {
-        gitHubDataService.fetchIssues(owner, repo);
-    }
+
 
     private void updateOrCreateIssue(IssueDTO issueDTO) {
         Optional<Issue> existingIssue = issueRepository.findById(issueDTO.getId());

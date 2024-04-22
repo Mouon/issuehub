@@ -22,6 +22,9 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework:spring-aspects'
+	implementation 'org.springframework.retry:spring-retry'
 	implementation 'org.kohsuke:github-api:1.301'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'com.mysql:mysql-connector-j'
