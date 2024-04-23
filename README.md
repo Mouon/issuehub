@@ -28,7 +28,7 @@ Issuehub는 GitHub 저장소로부터 지속적인 업데이트를 제공합니�
 Issuehub의 주요 목표는 GitHub 저장소에서의 이슈에 대한 실시간 업데이트를 개발자들에게 제공하는 것입니다. 이는 Kafka와 Spring Boot 스케줄링을 결합하여 달성됩니다.
 
 ## 목표
-Issuehub의 주요 목표는 스프링 부트의 스케줄러를 사용하여 GitHub 데이터를 주기적으로 업데이트하고, Kafka 프로듀서를 통해 해당 데이터를 Kafka 토픽에 발행한 후, Kafka 컨슈머가 해당 토픽을 구독하여 메시지를 받는 것입니다. 이를 통해 개발자들은 GitHub 저장소의 이슈를 실시간으로 추적하고 업데이트된 정보에 즉각적으로 접근할 수 있습니다.
+Issuehub의 주요 목표는 스프링 부트의 스케줄러를 사용하여 GitHub 데이터를 주기적으로 업데이트하고, Kafka 프로듀서를 통해 해당 데이터를 Kafka 토픽에 발행한 후, 이를 통해 개발자들은 GitHub 저장소의 이슈를 실시간으로 추적하고 업데이트된 정보에 즉각적으로 접근할 수 있습니다.
 
 ### 구성 요소
 #### Scheduler 설정 (DataUpdateScheduler 클래스)
@@ -53,25 +53,14 @@ Kafka Consumer는 Kafka 토픽을 구독하고 메시지를 처리합니다. 이
 
 `ConcurrentKafkaListenerContainerFactory`는 이러한 메시지를 처리하는 데 사용됩니다.
 
-### 작동 원리
-1. **스케줄된 데이터 업데이트**: Spring Boot의 스케줄러가 GitHub 데이터를 가져오기 위한 주기적인 업데이트를 트리거합니다.
-2. **데이터 발행을 위한 Kafka 프로듀서**: GitHubDataService는 GitHub API에서 이슈 및 README 데이터를 가져와서 이를 Kafka 토픽에 발행합니다. (`github-issues` 및 `github-readme` 토픽)
-3. **데이터 구독을 위한 Kafka 컨슈머**: Kafka 컨슈머는 Kafka 토픽을 구독하고 들어오는 메시지를 처리합니다.
 
-### 장점
-- **실시간 업데이트**: 개발자들은 수동적인 개입 없이도 자신이 관심 있는 저장소의 최신 이슈에 대해 실시간으로 업데이트를 받을 수 있습니다.
-- **확장성**: Kafka의 분산 아키텍처는 고처리량 및 확장 가능한 데이터 처리를 가능하게 합니다.
-- **유연성**: Spring Boot의 스케줄러는 프로젝트 요구에 따라 데이터 가져오기 작업을 유연하게 예약할 수 있는 유연성을 제공합니다.
 
 ### Architecture
 <img width="1382" alt="스크린샷 2024-04-21 오후 5 03 19" src="https://github.com/Mouon/issuehub/assets/137624597/49927611-6c41-46b8-b5ac-f6a813813bb6">
 
-![IKgHBbE3QS](https://github.com/Mouon/issuehub/assets/137624597/9da58e30-220e-48f8-b4d9-2e73d86938e6)
 
 
 
-### Sequence Diagram
-<img width="752" alt="스크린샷 2024-04-21 오후 3 17 54" src="https://github.com/Mouon/issuehub/assets/137624597/3679f28f-1aba-47a7-b6d8-4dcc9d0d26f3">
 
 
 
