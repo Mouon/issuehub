@@ -181,5 +181,36 @@ function convertAsciiDocImagesToHTML(text) {
         return `<a href="${link ? link[1] : '#'}"><img src="${src}" alt="${alt}" title="${title}"></img></a>`;
     });
 }
+document.getElementById('search-input').addEventListener('input', function(event) {
+    if (event.target.value.length > 0) {
+        searchIssues(event.target.value);
+    } else {
+        fetchAndDisplayIssues('defaultCategory'); // 예를 들어, 기본 카테고리나 전체 리스트를 다시 표시
+    }
+});
+
+async function searchIssues(keyword) {
+    const issuesContainer = document.getElementById('issues');
+    issuesContainer.innerHTML = ''; // Clear previous issues
+    document.getElementById('readmePreview').style.display = 'none'; // Hide README preview during search
+
+    try {
+        const response = await fetch(`http://localhost:9000/issues/search?keyword=${keyword}`);
+        const issues = await response.json();
+        issues.forEach(issue => {
+            const card = document.createElement('div');
+            card.className = 'issue-card';
+            card.innerHTML = `<h2>${issue.title}</h2>
+                              <p>Repository: ${issue.repo} | Status: <span class="${issue.status}">${issue.status}</span></p>`;
+            card.addEventListener('click', () => {
+                showIssueDetails(issue.id);
+            });
+            issuesContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Error loading issues:', error);
+        issuesContainer.innerHTML = '<p>Error loading issues.</p>';
+    }
+}
 
 

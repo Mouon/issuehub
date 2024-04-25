@@ -24,7 +24,6 @@ public class IssueDTO {
         this.id = issue.getId();
         this.title = issue.getTitle();
         this.status = issue.getState();
-        this.updateDate = issue.getSince();
         this.detail = issue.getBody();
         this.owner=issue.getOwner();
         this.repo=issue.getRepo();
@@ -35,7 +34,6 @@ public class IssueDTO {
             this.id = i.getId();
             this.title = i.getTitle();
             this.status = i.getState();
-            this.updateDate = i.getSince();
             this.detail = i.getBody();
             this.owner = i.getOwner();
             this.repo = i.getRepo();

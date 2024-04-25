@@ -8,13 +8,9 @@ import com.everysource.everysource.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -27,9 +23,9 @@ import java.util.*;
 @RequiredArgsConstructor
 public class GitHubDataService {
     private final IssueRepository issueRepository;
+    private final IssueService issueService;
     private final ProjectRepository projectRepository;
     private final RestTemplate restTemplate;
-    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Value("${github.api.token}")
     private String token;
@@ -43,7 +39,7 @@ public class GitHubDataService {
 
 
 
-    @Transactional("jpaTransactionManager")
+    @Transactional
     public void fetchIssues(String owner, String repo) {
         try {
             log.info("{}/{}에 대한 이슈를 가져오는 중입니다.", owner, repo);
@@ -52,9 +48,8 @@ public class GitHubDataService {
             Arrays.stream(response.getBody()).forEach(issue -> {
                 issue.setOwner(owner);
                 issue.setRepo(repo);
-                issueRepository.save(issue);
-                kafkaTemplate.send("github-issues", owner + "/" + repo, issue.toString());
-                log.info("Issue sent to Kafka");
+                issueService.saveIssue(issue);
+//                issueRepository.save(issue);
             });
             log.debug("Transaction completed for fetchIssues");
         } catch (Exception e) {
@@ -63,7 +58,7 @@ public class GitHubDataService {
         }
     }
 
-    @Transactional("jpaTransactionManager")
+    @Transactional
     public ProjectReadmeDetailDTO fetchReadme(String owner, String repo) {
         try {
             log.info("{}/{}에 대한 README를 가져오는 중입니다.", owner, repo);
@@ -74,7 +69,6 @@ public class GitHubDataService {
             project.setRepo(repo);
             project.setOwner(owner);
             projectRepository.save(project);
-            kafkaTemplate.send("github-readme", owner + "/" + repo, project.toString());
             return new ProjectReadmeDetailDTO(Optional.of(project));
         } catch (Exception e) {
             log.error("{}/{} README 가져오기 실패", owner, repo, e);

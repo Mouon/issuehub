@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+
 public class Issue {
     @Id
     private Long id;

@@ -1,0 +1,42 @@
+{
+    "properties": {
+      "id": {
+        "type": "long"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "custom_analyzer"
+      },
+      "owner": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "repo": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "state": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "since": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis"
+      },
+      "body": {
+        "type": "text"
+      }
+    }
+}

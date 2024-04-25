@@ -13,19 +13,13 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     open-in-view: false
-  kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-      properties.transaction.timeout.ms: 60000
-      transaction-id-prefix: txn-
 
-    consumer:
-      group-id: github-data-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+
+
+  data:
+    elasticsearch:
+      cluster-nodes: localhost:9200
 
 logging.level:
   org.hibernate.SQL: debug
