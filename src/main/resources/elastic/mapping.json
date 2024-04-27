@@ -36,7 +36,8 @@
         "format": "strict_date_optional_time||epoch_millis"
       },
       "body": {
-        "type": "text"
+        "type": "text",
+        "analyzer": "custom_analyzer"
       }
     }
 }

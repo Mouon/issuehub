@@ -1,11 +1,10 @@
 package com.everysource.everysource.dto;
 
-import com.everysource.everysource.domain.Issue;
+import com.everysource.everysource.domain.api.Issue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 @RequiredArgsConstructor
 @Getter @Setter
 public class IssueListDTO {

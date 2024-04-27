@@ -1,6 +1,6 @@
 package com.everysource.everysource.dto;
 
-import com.everysource.everysource.domain.Category;
+import com.everysource.everysource.domain.api.Category;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,8 +1,7 @@
 package com.everysource.everysource.service;
 
-import com.everysource.everysource.domain.Issue;
-import com.everysource.everysource.domain.IssueSearch;
-import com.everysource.everysource.domain.Project;
+import com.everysource.everysource.domain.api.Issue;
+import com.everysource.everysource.domain.api.IssueSearch;
 import com.everysource.everysource.dto.IssueDTO;
 import com.everysource.everysource.dto.IssueListDTO;
 import com.everysource.everysource.repository.IssueRepository;
@@ -10,7 +9,6 @@ import com.everysource.everysource.repository.IssueSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +59,7 @@ public class IssueService {
         return issue;
     }
 
+    /** 엘라스틱용 객체 생성 */
     private IssueSearch convertToIssueSearch(Issue issue) {
         return IssueSearch.builder()
                 .id(issue.getId())

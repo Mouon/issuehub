@@ -1,4 +1,4 @@
-package com.everysource.everysource.domain;
+package com.everysource.everysource.domain.api;
 
 
 import lombok.*;

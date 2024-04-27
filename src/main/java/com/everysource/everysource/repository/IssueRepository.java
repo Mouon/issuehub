@@ -1,7 +1,6 @@
 package com.everysource.everysource.repository;
 
-import com.everysource.everysource.domain.Issue;
-import org.springframework.context.annotation.Primary;
+import com.everysource.everysource.domain.api.Issue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

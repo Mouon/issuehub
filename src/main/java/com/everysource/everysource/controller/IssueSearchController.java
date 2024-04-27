@@ -1,6 +1,6 @@
 package com.everysource.everysource.controller;
 
-import com.everysource.everysource.domain.IssueSearch;
+import com.everysource.everysource.domain.api.IssueSearch;
 import com.everysource.everysource.service.IssueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,12 +1,10 @@
 package com.everysource.everysource.dto;
 
-import com.everysource.everysource.domain.Issue;
+import com.everysource.everysource.domain.api.Issue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @RequiredArgsConstructor

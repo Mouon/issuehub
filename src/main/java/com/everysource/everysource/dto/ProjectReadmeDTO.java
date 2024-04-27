@@ -1,8 +1,7 @@
 package com.everysource.everysource.dto;
 
 
-import com.everysource.everysource.domain.Issue;
-import com.everysource.everysource.domain.Project;
+import com.everysource.everysource.domain.api.Project;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

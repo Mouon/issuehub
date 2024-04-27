@@ -29,4 +29,9 @@ public class DataUpdateScheduler {
         log.info("GitHub 데이터 업데이트를 완료했습니다.");
     }
 
+
+
+
+
+
 }

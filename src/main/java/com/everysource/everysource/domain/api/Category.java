@@ -1,4 +1,4 @@
-package com.everysource.everysource.domain;
+package com.everysource.everysource.domain.api;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

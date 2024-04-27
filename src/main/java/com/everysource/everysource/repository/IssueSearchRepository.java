@@ -1,23 +1,20 @@
 package com.everysource.everysource.repository;
 
-import com.everysource.everysource.domain.Issue;
-import com.everysource.everysource.domain.IssueSearch;
-import jakarta.persistence.criteria.Predicate;
+import com.everysource.everysource.domain.api.IssueSearch;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
-import java.util.ArrayList;
+
 import java.util.List;
 /**
  * Multi Match 쿼리 구조
  *
- * title^3은 title 필드에 가중치를 3배 주어 검색 결과에서 더 중요하게 다루어짐
+ * title^2은 title 필드에 가중치를 3배 주어 검색 결과에서 더 중요하게 다루어짐
  *
  * {
  *   "multi_match": {
  *     "query": "?0",
- *     "fields": ["title^3", "content", "author"],
+ *     "fields": ["title^2", "body", "repo","owner"],
  *     "type": "best_fields"
  *   }
  * }
@@ -26,7 +23,7 @@ import java.util.List;
 
 @Repository
 public interface IssueSearchRepository extends ElasticsearchRepository<IssueSearch, String> {
-    @Query("{\"multi_match\": {\"query\": \"?0\", \"fields\": [\"title\", \"body\", \"repo\", \"owner\"], \"type\": \"best_fields\"}}")
+    @Query("{\"multi_match\": {\"query\": \"?0\", \"fields\": [\"title^2\", \"body\", \"repo\", \"owner\"], \"type\": \"best_fields\"}}")
     List<IssueSearch> findByKeyword(String keyword);
 }
 

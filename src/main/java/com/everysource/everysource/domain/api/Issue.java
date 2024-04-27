@@ -1,4 +1,4 @@
-package com.everysource.everysource.domain;
+package com.everysource.everysource.domain.api;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

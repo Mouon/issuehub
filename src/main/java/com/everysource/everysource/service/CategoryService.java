@@ -1,12 +1,9 @@
 package com.everysource.everysource.service;
 
-import com.everysource.everysource.domain.Category;
-import com.everysource.everysource.domain.Issue;
+import com.everysource.everysource.domain.api.Category;
 import com.everysource.everysource.dto.CategoryPoolDTO;
-import com.everysource.everysource.dto.IssueListDTO;
 import com.everysource.everysource.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
