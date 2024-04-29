@@ -1,4 +1,4 @@
-package com.everysource.everysource.repository;
+package com.everysource.everysource.repository.api;
 
 import com.everysource.everysource.domain.api.Issue;
 import org.springframework.data.jpa.repository.JpaRepository;

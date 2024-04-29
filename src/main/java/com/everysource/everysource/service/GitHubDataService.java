@@ -2,9 +2,9 @@ package com.everysource.everysource.service;
 
 import com.everysource.everysource.domain.api.Issue;
 import com.everysource.everysource.domain.api.Project;
-import com.everysource.everysource.dto.ProjectReadmeDetailDTO;
-import com.everysource.everysource.repository.IssueRepository;
-import com.everysource.everysource.repository.ProjectRepository;
+import com.everysource.everysource.dto.api.ProjectReadmeDetailDTO;
+import com.everysource.everysource.repository.api.IssueRepository;
+import com.everysource.everysource.repository.api.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

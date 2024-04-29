@@ -1,8 +1,8 @@
 package com.everysource.everysource.service;
 
 import com.everysource.everysource.domain.api.Category;
-import com.everysource.everysource.dto.CategoryPoolDTO;
-import com.everysource.everysource.repository.CategoryRepository;
+import com.everysource.everysource.dto.api.CategoryPoolDTO;
+import com.everysource.everysource.repository.api.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

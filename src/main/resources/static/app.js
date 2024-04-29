@@ -4,14 +4,29 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(categories => {
         const menu = document.getElementById('category-menu');
         let initialLoad = true;
+
+        categories.push({name: 'errorHub'}); // errorHub 추가
+
         categories.forEach(category => {
             const menuItem = document.createElement('li');
             menuItem.textContent = category.name;
             menuItem.setAttribute('data-repo', category.name);
             menuItem.addEventListener('click', function() {
+                document.querySelectorAll('.category-menu li').forEach(item => {
+                    item.classList.remove('selected'); // 기존에 선택된 항목의 selected 클래스 제거
+                });
+                menuItem.classList.add('selected'); // 현재 선택된 항목에 selected 클래스 추가
+
                 const repo = this.getAttribute('data-repo');
-                fetchAndDisplayIssues(repo);
-                fetchAndDisplayReadmePreview(repo);
+                if (repo === 'errorHub') {
+                    fetchAndDisplayIssuesForErrorHub(); // errorHub 전용 함수 호출
+                    document.getElementById('readmePreview').style.display = 'none'; // README preview 숨김
+                    document.getElementById('writeButton').style.display = 'block'; // errorHub 선택 시 버튼 표시
+                } else {
+                    fetchAndDisplayIssues(repo);
+                    fetchAndDisplayReadmePreview(repo);
+                    document.getElementById('writeButton').style.display = 'none'; // 다른 카테고리 선택 시 버튼 숨기기
+                }
             });
             menu.appendChild(menuItem);
             if (initialLoad) {
@@ -23,9 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .catch(error => console.error('Error loading categories:', error));
 });
-
-
-
 
 async function fetchAndDisplayIssues(categoryName) {
     const issuesContainer = document.getElementById('issues');
@@ -181,11 +193,19 @@ function convertAsciiDocImagesToHTML(text) {
         return `<a href="${link ? link[1] : '#'}"><img src="${src}" alt="${alt}" title="${title}"></img></a>`;
     });
 }
+
 document.getElementById('search-input').addEventListener('input', function(event) {
-    if (event.target.value.length > 0) {
-        searchIssues(event.target.value);
+    const keyword = event.target.value;
+    const selectedCategory = document.querySelector('.category-menu li.selected');
+
+    if (keyword.length > 0) {
+        if (selectedCategory && selectedCategory.textContent === "errorHub") {
+            searchIssuesOnErrorBoard(keyword);
+        } else {
+            searchIssues(keyword);
+        }
     } else {
-        fetchAndDisplayIssues('defaultCategory'); // 예를 들어, 기본 카테고리나 전체 리스트를 다시 표시
+        fetchAndDisplayIssues('defaultCategory'); // 기본 카테고리나 전체 리스트를 다시 표시
     }
 });
 
@@ -213,4 +233,128 @@ async function searchIssues(keyword) {
     }
 }
 
+async function searchIssuesOnErrorBoard(keyword) {
+    const issuesContainer = document.getElementById('issues');
+    issuesContainer.innerHTML = ''; // Clear previous issues
+    document.getElementById('readmePreview').style.display = 'none'; // Hide README preview during search
 
+    try {
+        const response = await fetch(`http://localhost:9000/error_board/search?keyword=${keyword}`);
+        const issues = await response.json();
+        issues.forEach(issue => {
+            const card = document.createElement('div');
+            card.className = 'issue-card';
+            card.innerHTML = `
+                <h2>${issue.name}</h2>`;
+            card.addEventListener('click', () => {
+                showErrorBoardDetails(issue.id);
+            });
+            issuesContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Error loading issues from error board:', error);
+        issuesContainer.innerHTML = '<p>Error loading issues.</p>';
+    }
+}
+
+async function showErrorBoardDetails(issueId) {
+    const modal = document.getElementById('issueModal');
+
+    // 모달 내용 초기화
+    document.getElementById('modalTitle').textContent = '';
+    document.getElementById('modalDetail').innerHTML = '';
+    document.getElementById('modalRepo').textContent = '';
+    document.getElementById('modalStatus').textContent = '';
+    document.getElementById('modalOwner').textContent = '';
+    document.getElementById('modalUpdateDate').textContent = '';
+
+    try {
+        const response = await fetch(`http://localhost:9000/error_board/detail?id=${issueId}`);
+        const issueDetails = await response.json();
+
+        modalTitle.textContent = issueDetails.name;
+        modalDetail.innerHTML = marked.parse(issueDetails.content);
+        modal.style.display = 'block';
+    } catch (error) {
+        console.error('Error loading issue details:', error);
+        modalDetail.textContent = 'Failed to load detailed information.';
+    }
+}
+function showWriteModal() {
+    // 모달 내용 초기화
+    document.getElementById('modalTitle').textContent = '';
+    document.getElementById('modalDetail').innerHTML = '';
+    document.getElementById('modalRepo').textContent = '';
+    document.getElementById('modalStatus').textContent = '';
+    document.getElementById('modalOwner').textContent = '';
+    document.getElementById('modalUpdateDate').textContent = '';
+
+    const modal = document.getElementById('issueModal');
+    modal.style.display = 'block'; // 모달을 보여줌
+    document.getElementById('modalTitle').textContent = '새 글 작성';
+    document.getElementById('modalDetail').innerHTML = `
+        <input type="text" id="name" placeholder="제목" required style="font-size: 0.8rem; margin-bottom: 5px;"><br>
+        <textarea id="content" placeholder="내용" required style="font-size: 0.8rem; height: 100px;"></textarea><br>
+        <input type="password" id="password" placeholder="비밀번호" required style="font-size: 0.8rem; margin-bottom: 5px;"><br>
+        <button class="button" id="submitButton">작성</button>
+    `;
+
+    const submitButton = document.getElementById('submitButton');
+    submitButton.addEventListener('click', submitWriteForm);
+}
+
+async function fetchAndDisplayIssuesForErrorHub() {
+    const issuesContainer = document.getElementById('issues');
+    issuesContainer.innerHTML = ''; // Clear previous issues
+    const response = await fetch(`http://localhost:9000/error_board/all`);
+    const issues = await response.json();
+    issues.forEach(issue => {
+        const card = document.createElement('div');
+        card.className = 'issue-card';
+        card.innerHTML = `<h2>${issue.name}</h2>`;
+        card.addEventListener('click', () => {
+            showErrorBoardDetails(issue.id);
+        });
+        issuesContainer.appendChild(card);
+    });
+}
+
+
+function submitWriteForm() {
+    const data = {
+        name: document.getElementById('name').value,
+        content: document.getElementById('content').value,
+        password: document.getElementById('password').value
+    };
+
+    fetch('http://localhost:9000/error_board/write', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            console.log('Form submitted successfully:', data);
+            closeModal();
+        } else {
+            console.error('Form submission failed:', data);
+        }
+    })
+    .catch(error => {
+        console.error('Error submitting form:', error);
+    });
+}
+
+function closeModal() {
+    const modal = document.getElementById('issueModal');
+    modal.style.display = 'none'; // 모달 닫기
+}
+
+
+function closeModal() {
+    const modal = document.getElementById('issueModal');
+    modal.style.display = 'none'; // 모달 닫기
+}

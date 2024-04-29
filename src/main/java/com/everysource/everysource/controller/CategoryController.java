@@ -1,8 +1,6 @@
 package com.everysource.everysource.controller;
 
-import com.everysource.everysource.dto.CategoryPoolDTO;
-import com.everysource.everysource.dto.IssueListDTO;
-import com.everysource.everysource.repository.CategoryRepository;
+import com.everysource.everysource.dto.api.CategoryPoolDTO;
 import com.everysource.everysource.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

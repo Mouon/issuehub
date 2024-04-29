@@ -1,8 +1,8 @@
 package com.everysource.everysource.controller;
 
-import com.everysource.everysource.dto.IssueDTO;
-import com.everysource.everysource.dto.IssueListDTO;
-import com.everysource.everysource.repository.IssueRepository;
+import com.everysource.everysource.dto.api.IssueDTO;
+import com.everysource.everysource.dto.api.IssueListDTO;
+import com.everysource.everysource.repository.api.IssueRepository;
 import com.everysource.everysource.service.GitHubDataService;
 import com.everysource.everysource.service.IssueService;
 import org.springframework.beans.factory.annotation.Autowired;

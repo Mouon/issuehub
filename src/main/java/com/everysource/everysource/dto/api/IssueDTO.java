@@ -1,4 +1,4 @@
-package com.everysource.everysource.dto;
+package com.everysource.everysource.dto.api;
 
 import com.everysource.everysource.domain.api.Issue;
 import lombok.Getter;

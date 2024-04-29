@@ -1,4 +1,4 @@
-package com.everysource.everysource.repository;
+package com.everysource.everysource.repository.api;
 
 import com.everysource.everysource.domain.api.IssueSearch;
 import org.springframework.data.elasticsearch.annotations.Query;

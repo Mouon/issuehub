@@ -254,7 +254,27 @@
             line-height: 1.5;
             color: #24292e;
         }
-
+        #writeButton {
+            background-color: #6c757d; /* Bootstrap의 secondary 색상 */
+            color: white;
+            font-size: 0.8rem;
+            padding: 8px 12px;
+            border-radius: 5px;
+            position: fixed; /* 고정 위치 */
+            bottom: 20px; /* 하단에서 20px 위 */
+            right: 20px; /* 오른쪽에서 20px 왼쪽 */
+            display: none; /* 초기에는 숨김 처리 */
+            width: auto; /* 또는 적당한 너비 값을 설정하세요 */
+            max-width: 200px; /* 버튼의 최대 너비를 제한합니다 */
+            white-space: nowrap; /* 버튼 텍스트가 여러 줄로 나누어지는 것을 방지합니다 */
+        }
+        /* 모달 내의 버튼 스타일 */
+        .modal-content .button {
+            background-color: #6c757d; /* 모달 버튼도 회색으로 */
+            color: white;
+            font-size: 0.8rem; /* 글자 크기를 작게 */
+            padding: 6px 10px; /* 패딩 조정 */
+        }
     </style>
 </head>
 <body>
@@ -270,6 +290,7 @@
     </div>
     <div id="issues"></div>
 </div>
+<button id="writeButton" class="button">Write ErrorHub</button>
 <div id="issueModal" class="modal">
     <div class="modal-content">
         <h2 id="modalTitle">Issue Title Here</h2>
@@ -289,6 +310,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="app.js"></script>
+<script src="/app.js"></script>
 </body>
 </html>

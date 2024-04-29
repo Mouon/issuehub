@@ -1,8 +1,7 @@
 package com.everysource.everysource.controller;
 
-import com.everysource.everysource.dto.ProReadmeListDTO;
-import com.everysource.everysource.dto.ProjectReadmeDTO;
-import com.everysource.everysource.dto.ProjectReadmeDetailDTO;
+import com.everysource.everysource.dto.api.ProReadmeListDTO;
+import com.everysource.everysource.dto.api.ProjectReadmeDetailDTO;
 import com.everysource.everysource.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

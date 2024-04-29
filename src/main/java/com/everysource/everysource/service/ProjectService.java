@@ -1,9 +1,10 @@
 package com.everysource.everysource.service;
 
 import com.everysource.everysource.domain.api.Project;
-import com.everysource.everysource.dto.*;
-import com.everysource.everysource.repository.IssueRepository;
-import com.everysource.everysource.repository.ProjectRepository;
+import com.everysource.everysource.dto.api.ProReadmeListDTO;
+import com.everysource.everysource.dto.api.ProjectReadmeDetailDTO;
+import com.everysource.everysource.repository.api.IssueRepository;
+import com.everysource.everysource.repository.api.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
