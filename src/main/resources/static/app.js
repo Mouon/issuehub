@@ -35,6 +35,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 initialLoad = false;
             }
         });
+            const writeButton = document.getElementById('writeButton');
+            if (writeButton) {
+                writeButton.addEventListener('click', showWriteModal);
+            }
     })
     .catch(error => console.error('Error loading categories:', error));
 });
@@ -354,7 +358,3 @@ function closeModal() {
 }
 
 
-function closeModal() {
-    const modal = document.getElementById('issueModal');
-    modal.style.display = 'none'; // 모달 닫기
-}
