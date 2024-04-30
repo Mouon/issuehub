@@ -23,7 +23,7 @@ import java.util.List;
 
 @Repository
 public interface IssueSearchRepository extends ElasticsearchRepository<IssueSearch, String> {
-    @Query("{\"multi_match\": {\"query\": \"?0\", \"fields\": [\"title^2\", \"body\", \"repo\", \"owner\"], \"type\": \"best_fields\"}}")
+    @Query("{\"multi_match\": {\"query\": \"?0\", \"fields\": [\"title^2\", \"body\", \"repo\", \"owner\"], \"type\": \"phrase_prefix\"}}")
     List<IssueSearch> findByKeyword(String keyword);
 }
 

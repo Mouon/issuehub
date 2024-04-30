@@ -1,13 +1,24 @@
 {
-    "number_of_shards": 3,
-    "number_of_replicas": 2,
-    "analysis": {
-      "analyzer": {
-        "custom_analyzer": {
-          "type": "custom",
-          "tokenizer": "standard",
-          "filter": ["lowercase", "asciifolding"]
-        }
+  "number_of_shards": 3,
+  "number_of_replicas": 2,
+  "analysis": {
+    "analyzer": {
+      "custom_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "asciifolding",
+          "ngram_filter"
+        ]
+      }
+    },
+    "filter": {
+      "ngram_filter": {
+        "type": "ngram",
+        "min_gram": 1,
+        "max_gram": 20
       }
     }
+  }
 }

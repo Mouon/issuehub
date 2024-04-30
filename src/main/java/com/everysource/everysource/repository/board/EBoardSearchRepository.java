@@ -11,7 +11,11 @@ import java.util.List;
 
 @Repository
 public interface EBoardSearchRepository extends ElasticsearchRepository<ErrorBoardSearch, String> {
-    @Query("{\"multi_match\": {\"query\": \"?0\", \"fields\": [\"name\", \"content\"]}}")
+
+    /**
+     * 부분일치 + 오타 허용 phrase_prefix 사용
+     * */
+    @Query("{\"multi_match\": {\"query\": \"?0\", \"fields\": [\"name\", \"content\"], \"type\": \"phrase_prefix\"}}")
     List<ErrorBoardSearch> findByKeyword(String keyword);
 
     List<ErrorBoardSearch> findAll();
