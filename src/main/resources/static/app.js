@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function fetchAndDisplayIssues(categoryName) {
     const issuesContainer = document.getElementById('issues');
-    issuesContainer.innerHTML = ''; // Clear previous issues
+    issuesContainer.innerHTML = '';
     const response = await fetch(`http://localhost:9000/issues/list/repo?repo=${categoryName}`);
     const issues = await response.json();
     issues.forEach(issue => {
