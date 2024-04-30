@@ -55,6 +55,13 @@ public class EBoardService {
         eBoardSearchRepository.save(errorBoardSearch);
     }
 
+    @Transactional
+    public void eBoardDelete(Long id){
+        eBoardRepository.deleteById(id);
+        eBoardSearchRepository.deleteById(String.valueOf(id));
+    }
+
+
 
     @Transactional
     public EBoardDetailDTO getEBoardDetail(Long id) {
