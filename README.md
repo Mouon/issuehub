@@ -1,4 +1,4 @@
-<img width="1624" alt="스크린샷 2024-04-29 오후 3 24 34" src="https://github.com/Mouon/issuehub/assets/137624597/25fee05d-7c50-4a43-85c6-d0394f5c8b21"># Issurhub
+# Issurhub
 ## Stack
 <img src="https://img.shields.io/badge/Elasticsearch-005571?style=for-the-badge&logo=Elasticsearch&logoColor=white"> <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 ## 소개
@@ -10,7 +10,7 @@ Everysource는 오픈소스 프로젝트의 이슈를 쉽고 빠르게 찾을 �
 <img width="1624" alt="스크린샷 2024-04-25 오후 8 22 32" src="https://github.com/Mouon/issuehub/assets/137624597/0af37291-76eb-447f-aa78-987b5b4b198f">
 
 <img width="1624" alt="스크린샷 2024-04-25 오후 8 22 46" src="https://github.com/Mouon/issuehub/assets/137624597/12754963-c9a2-407d-a50f-e57c6d382586">
-
+<img width="1624" alt="스크린샷 2024-04-29 오후 3 24 34" src="https://github.com/Mouon/issuehub/assets/137624597/25fee05d-7c50-4a43-85c6-d0394f5c8b21">
 <img width="1624" alt="스크린샷 2024-04-29 오후 3 24 34" src="https://github.com/Mouon/issuehub/assets/137624597/d0e7120f-36a4-4827-ae4f-219d6ca71853">
 <img width="1624" alt="스크린샷 2024-04-29 오후 3 24 48" src="https://github.com/Mouon/issuehub/assets/137624597/d1f69845-6f43-406f-bf14-231f6f05a608">
 <img width="1624" alt="스크린샷 2024-04-29 오후 3 28 33" src="https://github.com/Mouon/issuehub/assets/137624597/182451ad-994d-4901-b471-75829ebf6f92">
