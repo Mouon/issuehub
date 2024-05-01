@@ -8,7 +8,7 @@ Everysource는 오픈소스 프로젝트의 이슈를 쉽고 빠르게 찾을 �
 
 
 ## 실행 화면
-초기화면<img width="1602" alt="스크린샷 2024-04-25 오후 8 21 57" src="https://github.com/Mouon/issuehub/assets/137624597/ad04175c-5320-4a9c-a124-047a265b8360">
+초기화면<img width="1624" alt="스크린샷 2024-05-01 오후 11 15 01" src="https://github.com/Mouon/issuehub/assets/137624597/41b938b1-d1c1-46c5-8d0a-facfb6d37795">
 리드미 상세보기<img width="1624" alt="스크린샷 2024-04-25 오후 8 22 32" src="https://github.com/Mouon/issuehub/assets/137624597/0af37291-76eb-447f-aa78-987b5b4b198f">
 이슈 상세보기<img width="1624" alt="스크린샷 2024-04-25 오후 8 22 46" src="https://github.com/Mouon/issuehub/assets/137624597/12754963-c9a2-407d-a50f-e57c6d382586">
 에러 커뮤니티인 "errorHub"<img width="1624" alt="스크린샷 2024-04-29 오후 3 24 34" src="https://github.com/Mouon/issuehub/assets/137624597/25fee05d-7c50-4a43-85c6-d0394f5c8b21">
