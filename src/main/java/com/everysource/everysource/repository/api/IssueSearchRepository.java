@@ -1,11 +1,24 @@
 package com.everysource.everysource.repository.api;
 
 import com.everysource.everysource.domain.api.IssueSearch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+@Repository
+public interface IssueSearchRepository extends ElasticsearchRepository<IssueSearch, String> {
+    @Query("{\"multi_match\": {\"query\": \"?0\", \"fields\": [\"title^2\", \"body\", \"repo\", \"owner\"], \"type\": \"phrase_prefix\"}}")
+    List<IssueSearch> findByKeyword(String keyword);
+    List<IssueSearch> findByOwner(String owner);
+    List<IssueSearch> findByRepo(String repo);
+
+}
+
+
 /**
  * Multi Match 쿼리 구조
  *
@@ -20,13 +33,6 @@ import java.util.List;
  * }
  *
  * */
-
-@Repository
-public interface IssueSearchRepository extends ElasticsearchRepository<IssueSearch, String> {
-    @Query("{\"multi_match\": {\"query\": \"?0\", \"fields\": [\"title^2\", \"body\", \"repo\", \"owner\"], \"type\": \"phrase_prefix\"}}")
-    List<IssueSearch> findByKeyword(String keyword);
-}
-
 /**
  *
  private final IssueRepository issueRepository;

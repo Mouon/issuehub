@@ -17,6 +17,8 @@ public class IssueDTO {
     private String repo;
     private String updateDate;
     private String detail;
+    private int searchCount;
+
 
     public IssueDTO(Issue issue) {
         this.id = issue.getId();
@@ -25,6 +27,7 @@ public class IssueDTO {
         this.detail = issue.getBody();
         this.owner=issue.getOwner();
         this.repo=issue.getRepo();
+        this.searchCount= issue.getSearchCount();
     }
 
     public IssueDTO(Optional<Issue> issue) {
@@ -35,6 +38,7 @@ public class IssueDTO {
             this.detail = i.getBody();
             this.owner = i.getOwner();
             this.repo = i.getRepo();
+            this.searchCount= i.getSearchCount();
         });
     }
 

@@ -24,7 +24,7 @@ public class Issue {
     @Column(columnDefinition = "TEXT")
     private String body;
 
-
+    private int searchCount;
 
     public void updateIssue(String newStatus, String newUpdateDate, String newDetail) {
         if (newStatus != null) {

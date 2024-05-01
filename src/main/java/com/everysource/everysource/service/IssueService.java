@@ -8,6 +8,9 @@ import com.everysource.everysource.repository.api.IssueRepository;
 import com.everysource.everysource.repository.api.IssueSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,14 +33,22 @@ public class IssueService {
                 .collect(Collectors.toList());
     }
     public List<IssueListDTO> findIssuesByOwner(String owner) {
-        List<Issue> issues = issueRepository.findByOwner(owner);
+        List<IssueSearch> issues = issueSearchRepository.findByOwner(owner);
         return issues.stream()
                 .map(issue -> new IssueListDTO(issue))
                 .collect(Collectors.toList());
     }
 
     public List<IssueListDTO> findIssuesByRepo(String repo) {
-        List<Issue> issues = issueRepository.findByRepo(repo);
+        List<IssueSearch> issues = issueSearchRepository.findByRepo(repo);
+        return issues.stream()
+                .map(issue -> new IssueListDTO(issue))
+                .collect(Collectors.toList());
+    }
+
+    /** 검색 순위 서비스 */
+    public List<IssueListDTO> getTopSearchedIssues() {
+        List<Issue> issues = issueRepository.findTop10ByOrderBySearchCountDesc();
         return issues.stream()
                 .map(issue -> new IssueListDTO(issue))
                 .collect(Collectors.toList());
@@ -45,11 +56,15 @@ public class IssueService {
 
     public IssueDTO findIssuesDetail(Long id) {
         Optional<Issue> issue = issueRepository.findById(id);
+        issueRepository.incrementSearchCount(id);
         return new IssueDTO(issue);
     }
 
-    public List<IssueSearch> searchByKeyword(String keyword) {
-        return issueSearchRepository.findByKeyword(keyword);
+    public List<IssueListDTO> searchByKeyword(String keyword) {
+        List<IssueSearch> issues = issueSearchRepository.findByKeyword(keyword);
+        return issues.stream()
+                .map(issue -> new IssueListDTO(issue))
+                .collect(Collectors.toList());
     }
 
     public Issue saveIssue(Issue issue) {

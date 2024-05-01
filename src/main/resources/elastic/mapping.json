@@ -38,6 +38,10 @@
       "body": {
         "type": "text",
         "analyzer": "custom_analyzer"
+      },
+      "searchCount": {
+        "type": "integer"
       }
+
     }
 }

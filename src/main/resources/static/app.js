@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(categories => {
         const menu = document.getElementById('category-menu');
         let initialLoad = true;
-
+        categories.push({name: '🔥IssueTop10🔥'});
         categories.push({name: 'errorHub'}); // errorHub 추가
 
         categories.forEach(category => {
@@ -22,7 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     fetchAndDisplayIssuesForErrorHub(); // errorHub 전용 함수 호출
                     document.getElementById('readmePreview').style.display = 'none'; // README preview 숨김
                     document.getElementById('writeButton').style.display = 'block'; // errorHub 선택 시 버튼 표시
-                } else {
+                }
+                else if (repo === '🔥IssueTop10🔥') {
+                    fetchAndDisplayTopSearchedIssues(); // errorHub 전용 함수 호출
+                    document.getElementById('readmePreview').style.display = 'none'; // README preview 숨김
+                    document.getElementById('writeButton').style.display = 'none';
+                }
+                else {
                     fetchAndDisplayIssues(repo);
                     fetchAndDisplayReadmePreview(repo);
                     document.getElementById('writeButton').style.display = 'none'; // 다른 카테고리 선택 시 버튼 숨기기
@@ -198,8 +204,8 @@ function convertAsciiDocImagesToHTML(text) {
     });
 }
 
-document.getElementById('search-input').addEventListener('input', function(event) {
-    const keyword = event.target.value;
+document.getElementById('search-button').addEventListener('click', function() {
+    const keyword = document.getElementById('search-input').value;
     const selectedCategory = document.querySelector('.category-menu li.selected');
 
     if (keyword.length > 0) {
@@ -355,6 +361,29 @@ function submitWriteForm() {
 function closeModal() {
     const modal = document.getElementById('issueModal');
     modal.style.display = 'none'; // 모달 닫기
+}
+
+async function fetchAndDisplayTopSearchedIssues() {
+    const issuesContainer = document.getElementById('issues');
+    issuesContainer.innerHTML = ''; // Clear previous issues
+
+    try {
+        const response = await fetch('http://localhost:9000/issues/top-searched');
+        const issues = await response.json();
+        issues.forEach(issue => {
+            const card = document.createElement('div');
+            card.className = 'issue-card';
+            card.innerHTML = `<h2>${issue.title}</h2>
+                              <p>Repository: ${issue.repo} | Status: <span class="${issue.status}">${issue.status}</span></p>`;
+            card.addEventListener('click', () => {
+                showIssueDetails(issue.id);
+            });
+            issuesContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Error loading top searched issues:', error);
+        issuesContainer.innerHTML = '<p>Error loading top searched issues.</p>';
+    }
 }
 
 

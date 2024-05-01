@@ -34,5 +34,9 @@ public class IssueSearch {
     @Field(name="body", type = FieldType.Text)
     private String body;
 
+    @Field(name = "searchCount", type = FieldType.Integer, store = true)
+    private int searchCount;
+
+
 
 }
