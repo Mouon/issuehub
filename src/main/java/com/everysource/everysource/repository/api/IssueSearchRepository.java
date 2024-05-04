@@ -16,52 +16,34 @@ public interface IssueSearchRepository extends ElasticsearchRepository<IssueSear
     List<IssueSearch> findByOwner(String owner);
     List<IssueSearch> findByRepo(String repo);
 
+    @Query("{\"more_like_this\": {\"fields\": [\"title\", \"body\"], \"like\": [{\"_id\": \"?0\"}], \"min_term_freq\" : 1, \"max_query_terms\": 12}}")
+    List<IssueSearch> findSimilarIssues(Long issueId, Pageable pageable);
+
+
+    /**
+     * MLT 쿼리
+     * "min_term_freq": 이 옵션은 MLT 쿼리가 문서에서 최소 몇 번 등장하는 용어를 기준으로 삼을지 지정합니다.
+     * "max_query_terms": 이 옵션은 생성되는 쿼리에서 사용될 최대 용어 수를 지정합니다.
+     * "min_doc_freq": 이 옵션은 용어가 색인된 문서들 중 최소 몇 개의 문서에 등장해야 하는지 지정합니다.
+     * */
+    @Query("{\"bool\": {" +
+            "\"should\": [" +
+            "{\"more_like_this\": {" +
+            "\"fields\": [\"title\", \"repo\",\"body\"]," +
+            "\"like\": [{\"_id\": \"?0\"}]," +
+            "\"min_term_freq\": 1," +
+            "\"max_query_terms\": 10," +
+            "\"min_doc_freq\": 2" +
+            "}}," +
+            "{\"bool\": {" +
+            "\"must_not\": {" +
+            "\"ids\": {" +
+            "\"values\": ?1" +
+            "}" +
+            "}" +
+            "}}" +
+            "]" +
+            "}}")
+    List<IssueSearch> findSimilarIssues(List<Long> issueIds, List<Long> excludedIssueIds, Pageable pageable);
+
 }
-
-
-/**
- * Multi Match 쿼리 구조
- *
- * title^2은 title 필드에 가중치를 3배 주어 검색 결과에서 더 중요하게 다루어짐
- *
- * {
- *   "multi_match": {
- *     "query": "?0",
- *     "fields": ["title^2", "body", "repo","owner"],
- *     "type": "best_fields"
- *   }
- * }
- *
- * */
-/**
- *
- private final IssueRepository issueRepository;
-
- public IssueSearchRepository(IssueRepository issueRepository) {
- this.issueRepository = issueRepository;
- }
-
- /** 검색 로직.
- *
- *  데이터베이스 쿼리의 유연성을 크게 향상
- *\\\criteriaBuilder.or()\\\\\
- * CriteriaBuilder 객체의 메소드 중 하나로,
- * 여러 Predicate 객체를 인자로 받아 이들 중 하나라도
- * 참인 경우 참을 반환하는 조건을 생성
- * */
-//public List<Issue> searchIssues(String keyword) {
-//    Specification<Issue> spec = (root, query, criteriaBuilder) -> {/**Specification<Issue> 라고해서 root에 이슈 넘어감 */
-//        List<Predicate> predicates = new ArrayList<>();
-//        String pattern = "%" + keyword.toLowerCase() + "%";
-//        predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern));/**필드를 소문자로 변환합니다. LOWER(title) LIKE '%keyword%' 으로 쿼리 날라감*/
-//        predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), pattern));
-//        predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("author")), pattern));
-//        return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
-//    };
-//    return issueRepository.findAll(spec);
-//}
-
-
-
-
-

@@ -197,18 +197,6 @@
             background-color: #6f42c1;
         }
 
-        .search-box {
-            margin-bottom: 10px;
-        }
-
-        .search-input {
-            width: 50%; /* Smaller width as per feedback */
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
         .category-menu {
             display: flex;
             flex-wrap: wrap; /* Allows items to wrap onto the next line */
@@ -275,15 +263,118 @@
             font-size: 0.8rem; /* 글자 크기를 작게 */
             padding: 6px 10px; /* 패딩 조정 */
         }
+        .search-box {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #fff; /* 배경색은 흰색 */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            border: 2px solid transparent; /* 테두리 초기 상태 */
+            outline: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out; /* 부드러운 전환 효과 */
+        }
+
+        .search-input:focus {
+            border-color: #4A90E2; /* 포커스 상태의 테두리 색 */
+            box-shadow: 0 0 8px rgba(74, 144, 226, 0.5); /* 포커스 상태의 그림자 */
+            background-color: #e8f0fe; /* 포커스 상태의 배경색 */
+        }
+
+        .button {
+            padding: 8px 16px;
+            margin-left: 8px;
+            background-color: #4A90E2; /* 버튼 배경색 */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s; /* 버튼 배경색 전환 효과 */
+        }
+
+        .button:hover {
+            background-color: #357ABD; /* 버튼 호버 시 색상 변경 */
+        }
+        /* IssueHub 특별 스타일 및 애니메이션 설정 */
+        #issueHubTitle {
+            position: relative;
+            font-size: 2rem; /* 글자 크기 조정 */
+            letter-spacing: 2px; /* 글자 간격 조금 줄임 */
+            line-height: 1; /* 라인 높이 조정 */
+            cursor: pointer;
+            display: inline-block;
+            --clr: #4A90E2; /* 호버 시 변할 색상 지정 */
+        }
+        nav {
+          width: 100%;
+          max-width: 1200px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 24px 48px;
+        }
+
+        nav ul {
+          display: flex;
+          gap: 1.2rem;
+          list-style: none;
+        }
+
+        .menu-icon {
+          display: none;
+        }
+
+        /* 로그인, 로그아웃 버튼 스타일 */
+        .join-link, .login-link, .logout-link {
+          font-size: 0.8rem;
+          padding: 4px 8px;
+          border-radius: 4px;
+          background-color: #eee;
+          color: #333;
+          text-decoration: none;
+          display: inline-block;
+          margin-top: 1em;
+        }
+
+        /* 미디어 쿼리 추가 */
+        @media only screen and (max-width: 600px) {
+          .menu-icon {
+            display: block;
+          }
+
+          nav ul {
+            display: none;
+          }
+        }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <h1>IssueHub</h1>
-    <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search issues..." aria-label="Search issues" class="search-input">
-        <button id="search-button" class="button">Search</button>
+    <nav>
+        <h1 id="issueHubTitle">
+            <span class="text"> IssueHub </span>
+        </h1>
+        <ul>
+            <li><a href="#" class="login-link button">Login</a></li>
+            <li><a href="#" class="logout-link button" style="display:none;">Logout</a></li>
+            <li><a href="#" class="join-link button">Join</a></li>
+        </ul>
+    </nav>
+
+    <div class="search-box" style="flex-direction: column; align-items: stretch;">
+        <input type="text" id="search-input" class="search-input" placeholder="Search issues...">
+        <button id="search-button" class="button" style="margin-top: 8px;">Search</button>
     </div>
+
+
 
 
     <ul id="category-menu" class="category-menu horizontal-scroll"></ul>

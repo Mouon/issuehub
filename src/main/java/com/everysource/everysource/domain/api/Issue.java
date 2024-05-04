@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
@@ -25,6 +26,9 @@ public class Issue {
     private String body;
 
     private int searchCount;
+
+    @OneToMany(mappedBy = "issue")
+    private List<MemberIssueActivity> activities;
 
     public void updateIssue(String newStatus, String newUpdateDate, String newDetail) {
         if (newStatus != null) {

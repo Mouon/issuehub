@@ -2,10 +2,14 @@ package com.everysource.everysource.service;
 
 import com.everysource.everysource.domain.api.Issue;
 import com.everysource.everysource.domain.api.IssueSearch;
+import com.everysource.everysource.domain.api.Member;
+import com.everysource.everysource.domain.api.MemberIssueActivity;
 import com.everysource.everysource.dto.api.IssueDTO;
 import com.everysource.everysource.dto.api.IssueListDTO;
 import com.everysource.everysource.repository.api.IssueRepository;
 import com.everysource.everysource.repository.api.IssueSearchRepository;
+import com.everysource.everysource.repository.api.MemberIssueActivityRepository;
+import com.everysource.everysource.repository.api.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +31,10 @@ public class IssueService {
     @Autowired
     private final IssueSearchRepository issueSearchRepository;
 
+    @Autowired
+    private final MemberRepository memberRepository;
+    @Autowired
+    private final MemberIssueActivityRepository memberIssueActivityRepository;
     public List<IssueListDTO> findAllIssues() {
         List<Issue> issues = issueRepository.findAll();
         return issues.stream()
@@ -54,10 +63,34 @@ public class IssueService {
                 .collect(Collectors.toList());
     }
 
-    public IssueDTO findIssuesDetail(Long id) {
-        Optional<Issue> issue = issueRepository.findById(id);
-        issueRepository.incrementSearchCount(id);
+    public IssueDTO findIssuesDetail(Long memberId, Long issueId) {
+        Optional<Issue> issue = issueRepository.findById(issueId);
+        if (!issue.isPresent()) {
+            throw new IllegalArgumentException("Issue not found");
+        }
+        issueRepository.incrementSearchCount(issueId);
+        if (memberId != null) {
+            Optional<Member> member = memberRepository.findById(memberId);
+            member.ifPresent(m -> updateMemberIssueActivity(m, issue.get()));
+        }
+
         return new IssueDTO(issue);
+    }
+
+    private void updateMemberIssueActivity(Member member, Issue issue) {
+        MemberIssueActivity activity = memberIssueActivityRepository.findByMemberIdAndIssueId(member.getId(), issue.getId())
+                .orElseGet(() -> createAndSaveActivity(member, issue));
+        incrementViewCount(activity);
+    }
+
+    private MemberIssueActivity createAndSaveActivity(Member member, Issue issue) {
+        MemberIssueActivity activity = new MemberIssueActivity(member, issue, 0, LocalDateTime.now());
+        return memberIssueActivityRepository.save(activity);
+    }
+
+    private void incrementViewCount(MemberIssueActivity activity) {
+        activity.incrementViewCount();
+        memberIssueActivityRepository.save(activity);
     }
 
     public List<IssueListDTO> searchByKeyword(String keyword) {

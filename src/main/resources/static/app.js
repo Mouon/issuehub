@@ -1,10 +1,20 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // 카테고리 데이터 로딩
+    fetchCategoriesAndSetupMenu();
+
+    // 회원가입, 로그인, 로그아웃 버튼 이벤트 리스너 설정
+    setupAuthenticationEventListeners();
+});
+
+function fetchCategoriesAndSetupMenu() {
     fetch('http://localhost:9000/category/list')
     .then(response => response.json())
     .then(categories => {
         const menu = document.getElementById('category-menu');
         let initialLoad = true;
         categories.push({name: '🔥IssueTop10🔥'});
+        categories.push({name: '🐵Recommend20🐵'});
+
         categories.push({name: 'errorHub'}); // errorHub 추가
 
         categories.forEach(category => {
@@ -13,41 +23,107 @@ document.addEventListener('DOMContentLoaded', function () {
             menuItem.setAttribute('data-repo', category.name);
             menuItem.addEventListener('click', function() {
                 document.querySelectorAll('.category-menu li').forEach(item => {
-                    item.classList.remove('selected'); // 기존에 선택된 항목의 selected 클래스 제거
+                    item.classList.remove('selected');
                 });
-                menuItem.classList.add('selected'); // 현재 선택된 항목에 selected 클래스 추가
-
-                const repo = this.getAttribute('data-repo');
-                if (repo === 'errorHub') {
-                    fetchAndDisplayIssuesForErrorHub(); // errorHub 전용 함수 호출
-                    document.getElementById('readmePreview').style.display = 'none'; // README preview 숨김
-                    document.getElementById('writeButton').style.display = 'block'; // errorHub 선택 시 버튼 표시
-                }
-                else if (repo === '🔥IssueTop10🔥') {
-                    fetchAndDisplayTopSearchedIssues(); // errorHub 전용 함수 호출
-                    document.getElementById('readmePreview').style.display = 'none'; // README preview 숨김
-                    document.getElementById('writeButton').style.display = 'none';
-                }
-                else {
-                    fetchAndDisplayIssues(repo);
-                    fetchAndDisplayReadmePreview(repo);
-                    document.getElementById('writeButton').style.display = 'none'; // 다른 카테고리 선택 시 버튼 숨기기
-                }
+                menuItem.classList.add('selected');
+                handleCategorySelection(this.getAttribute('data-repo'));
             });
             menu.appendChild(menuItem);
             if (initialLoad) {
-                fetchAndDisplayIssues(category.name);
-                fetchAndDisplayReadmePreview(category.name);
+                handleCategorySelection(category.name);
                 initialLoad = false;
             }
         });
-            const writeButton = document.getElementById('writeButton');
-            if (writeButton) {
-                writeButton.addEventListener('click', showWriteModal);
-            }
     })
     .catch(error => console.error('Error loading categories:', error));
-});
+}
+
+function handleCategorySelection(repo) {
+    if (repo === 'errorHub') {
+        fetchAndDisplayIssuesForErrorHub();
+        document.getElementById('readmePreview').style.display = 'none';
+        document.getElementById('writeButton').style.display = 'block';
+    } else if (repo === '🔥IssueTop10🔥') {
+        fetchAndDisplayTopSearchedIssues();
+        document.getElementById('readmePreview').style.display = 'none';
+        document.getElementById('writeButton').style.display = 'none';
+    } else if (repo === '🐵Recommend20🐵') {
+        fetchAndDisplayRecommendedIssues();
+        document.getElementById('readmePreview').style.display = 'none';
+        document.getElementById('writeButton').style.display = 'none';
+    } else {
+        fetchAndDisplayIssues(repo);
+        fetchAndDisplayReadmePreview(repo);
+        document.getElementById('writeButton').style.display = 'none';
+    }
+}
+
+function setupAuthenticationEventListeners() {
+    document.querySelector('.join-link').addEventListener('click', function () {
+        const username = prompt("Enter your username:");
+        const password = prompt("Enter your password:");
+
+        if (!username.trim() || !password.trim()) {
+            alert("회원가입 실패: 모든 필드를 채워주세요!");
+            return;
+        }
+
+        fetch('http://localhost:9000/join', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({username, password})
+        })
+        .then(response => response.json())
+        .then(data => alert("회원가입 성공!"))
+        .catch(error => alert("회원가입 실패: " + error));
+    });
+
+    document.querySelector('.login-link').addEventListener('click', function () {
+        const username = prompt("Enter your username:");
+        const password = prompt("Enter your password:");
+
+        fetch('http://localhost:9000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({username, password})
+        })
+        .then(response => response.json())  // JSON으로 응답을 처리
+        .then(data => {
+            alert(data.message);  // 응답에서 메시지 필드 사용
+            if(data.memberId) {
+                sessionStorage.setItem('memberId', data.memberId);  // memberId 세션 스토리지에 저장
+            }
+            document.querySelector('.logout-link').style.display = 'block';
+            document.querySelector('.login-link').style.display = 'none';
+            document.querySelector('.join-link').style.display = 'none';
+        })
+        .catch(error => alert("로그인 실패: " + error.message));
+    });
+
+
+
+
+
+    document.querySelector('.logout-link').addEventListener('click', function () {
+        fetch('http://localhost:9000/logout', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            document.querySelector('.logout-link').style.display = 'none';
+            document.querySelector('.login-link').style.display = 'inline-block';
+            document.querySelector('.join-link').style.display = 'inline-block';
+        })
+        .catch(error => alert("로그아웃 실패: " + error));
+
+    });
+}
+
 
 async function fetchAndDisplayIssues(categoryName) {
     const issuesContainer = document.getElementById('issues');
@@ -383,6 +459,51 @@ async function fetchAndDisplayTopSearchedIssues() {
     } catch (error) {
         console.error('Error loading top searched issues:', error);
         issuesContainer.innerHTML = '<p>Error loading top searched issues.</p>';
+    }
+
+}
+
+async function fetchAndDisplayRecommendedIssues() {
+    const memberId = sessionStorage.getItem('memberId'); // 세션 스토리지에서 memberId 가져오기
+    console.log("Current memberId:", memberId); // 콘솔에 memberId 출력
+
+    const issuesContainer = document.getElementById('issues');
+    issuesContainer.innerHTML = ''; // Clear previous issues
+
+    if (!memberId) {
+        console.error('No memberId found. Please login.');
+        issuesContainer.innerHTML = '<p>Please login to see recommended issues.</p>';
+        return;
+    }
+
+    const url = `http://localhost:9000/issues/list/recommend?memberId=${memberId}`;
+    console.log("Calling API with URL:", url); // API 호출 URL 콘솔에 출력
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+        }
+        const issues = await response.json();
+        console.log("Received issues:", issues); // 받은 이슈 로그 출력
+
+        if (issues.length === 0) {
+            issuesContainer.innerHTML = '<p>No recommended issues found.</p>';
+            return;
+        }
+        issues.forEach(issue => {
+            const card = document.createElement('div');
+            card.className = 'issue-card';
+            card.innerHTML = `<h2>${issue.title}</h2>
+                              <p>Repository: ${issue.repo} | Status: <span class="${issue.status}">${issue.status}</span></p>`;
+            card.addEventListener('click', () => {
+                showIssueDetails(issue.id);
+            });
+            issuesContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Error loading recommended issues:', error);
+        issuesContainer.innerHTML = `<p>Error loading recommended issues: ${error.message}</p>`;
     }
 }
 

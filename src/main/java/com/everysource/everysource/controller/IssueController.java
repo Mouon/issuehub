@@ -3,8 +3,10 @@ package com.everysource.everysource.controller;
 import com.everysource.everysource.dto.api.IssueDTO;
 import com.everysource.everysource.dto.api.IssueListDTO;
 import com.everysource.everysource.repository.api.IssueRepository;
+import com.everysource.everysource.service.RecommendService;
 import com.everysource.everysource.service.api.GitHubDataService;
 import com.everysource.everysource.service.IssueService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,9 @@ public class IssueController {
     private GitHubDataService gitHubDataService;
     @Autowired
     private IssueService issueService;
+
+    @Autowired
+    private RecommendService recommendService;
     @Autowired
     private IssueRepository issueRepository;
 
@@ -49,8 +54,21 @@ public class IssueController {
 
 
     @GetMapping("/detail")
-    public ResponseEntity<IssueDTO> getOwnerIssues(@RequestParam Long id) {
-        IssueDTO issue = issueService.findIssuesDetail(id);
+    public ResponseEntity<IssueDTO> getIssuesDetail(@RequestParam Long id, HttpSession session) {
+        Long memberId = null;
+        Object memberIdObj = session.getAttribute("memberId");
+        if (memberIdObj != null) {
+            memberId = (Long) memberIdObj;
+        }
+        IssueDTO issue = issueService.findIssuesDetail(memberId, id);
         return ResponseEntity.ok(issue);
     }
+
+    @GetMapping("/list/recommend")
+    public ResponseEntity<List<IssueListDTO>> getRecommendIssue(@RequestParam Long memberId,HttpSession session) {
+        List<IssueListDTO> issues = recommendService.recommendIssues(memberId);
+
+        return ResponseEntity.ok(issues);
+    }
+
 }
