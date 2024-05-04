@@ -12,6 +12,8 @@ import com.everysource.everysource.repository.api.MemberIssueActivityRepository;
 import com.everysource.everysource.repository.api.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +64,7 @@ public class IssueService {
                 .map(issue -> new IssueListDTO(issue))
                 .collect(Collectors.toList());
     }
-
+    @Cacheable(value = "issue", key = "#issueId")
     public IssueDTO findIssuesDetail(Long memberId, Long issueId) {
         Optional<Issue> issue = issueRepository.findById(issueId);
         if (!issue.isPresent()) {
@@ -100,6 +102,9 @@ public class IssueService {
                 .collect(Collectors.toList());
     }
 
+    /** 캐시 데이터는 항상 최신 상태를 유지해야함
+     * 이슈 리스트가 변경될 때 캐시도 업데이트*/
+    @CachePut(value = "issues", key = "#issue.id")
     public Issue saveIssue(Issue issue) {
         issue = issueRepository.save(issue);
         IssueSearch issueSearch = convertToIssueSearch(issue);

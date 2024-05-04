@@ -5,6 +5,9 @@ spring:
     username: root
     password: ${DB_LOCAL_PASSWD}
 
+  devtools:
+    restart:
+      enabled: false
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,8 +17,15 @@ spring:
         default_batch_fetch_size: 100
     open-in-view: false
 
-
-
+  redis:
+    host: localhost
+    port: 6379
+    jedis:
+      pool:
+        max-active: 10
+        max-idle: 5
+        min-idle: 1
+        max-wait: -1ms
 
   data:
     elasticsearch:
@@ -27,7 +37,8 @@ logging.level:
   org.springframework.web : DEBUG
   org.springframework.web.socket : DEBUG
   org.apache.kafka: DEBUG
-  org.springframework.kafka: DEBUG
+  org.springframework.kafka:
+  org.springframework.cache: DEBUG
 github:
   api:
     token: ${GIT_TOKEN}

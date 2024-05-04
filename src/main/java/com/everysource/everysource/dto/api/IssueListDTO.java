@@ -6,9 +6,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @RequiredArgsConstructor
 @Getter @Setter
-public class IssueListDTO {
+public class IssueListDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
     private String title;
