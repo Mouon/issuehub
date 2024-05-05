@@ -85,6 +85,7 @@ public class IssueService {
         return new IssueDTO(issue);
     }
 
+
     private void updateMemberIssueActivity(Member member, Issue issue) {
         MemberIssueActivity activity = memberIssueActivityRepository.findByMemberIdAndIssueId(member.getId(), issue.getId())
                 .orElseGet(() -> createAndSaveActivity(member, issue));
