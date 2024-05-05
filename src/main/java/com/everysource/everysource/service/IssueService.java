@@ -64,6 +64,12 @@ public class IssueService {
                 .map(issue -> new IssueListDTO(issue))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Read Through 동작
+     * 캐싱 부분
+     * 상세조회시 IssueDTO 내용이 캐싱된다.
+     * */
     @Cacheable(value = "issue", key = "#issueId")
     public IssueDTO findIssuesDetail(Long memberId, Long issueId) {
         Optional<Issue> issue = issueRepository.findById(issueId);
@@ -102,8 +108,10 @@ public class IssueService {
                 .collect(Collectors.toList());
     }
 
-    /** 캐시 데이터는 항상 최신 상태를 유지해야함
-     * 이슈 리스트가 변경될 때 캐시도 업데이트*/
+    /**
+     * Write Through 동작
+     * 캐시 데이터는 항상 최신 상태를 유지해야함
+     * 이슈 리스트가 변경될 때 캐시도 업데이트 */
     @CachePut(value = "issues", key = "#issue.id")
     public Issue saveIssue(Issue issue) {
         issue = issueRepository.save(issue);
@@ -124,6 +132,5 @@ public class IssueService {
                 .body(issue.getBody())
                 .build();
     }
-
 
 }
