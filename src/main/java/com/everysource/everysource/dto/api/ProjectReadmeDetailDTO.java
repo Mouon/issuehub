@@ -5,11 +5,15 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 @Getter @Setter
 @RequiredArgsConstructor
-public class ProjectReadmeDetailDTO {
+public class ProjectReadmeDetailDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Long id;
 
     private String title;

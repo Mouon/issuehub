@@ -7,6 +7,8 @@ import com.everysource.everysource.repository.api.IssueRepository;
 import com.everysource.everysource.repository.api.ProjectRepository;
 import com.everysource.everysource.service.api.GitHubDataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -26,6 +28,13 @@ public class ProjectService {
         Project project = projectRepository.getContentByRepo(repo);
         return new ProReadmeListDTO(Optional.ofNullable(project));
     }
+
+
+    /**
+     * Read Through 동작
+     * 캐싱 부분
+     * */
+    @Cacheable(value = "readme", key = "#repo")
     public ProjectReadmeDetailDTO findReadmeDetail(String repo) {
         Project project = projectRepository.getContentByRepo(repo);
         return new ProjectReadmeDetailDTO(Optional.ofNullable(project));
