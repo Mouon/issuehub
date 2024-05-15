@@ -12,10 +12,13 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PROFILE: local
+      PROD_DB_PASSWORD: ${{ secrets.DB_LOCAL_PASSWD }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -25,15 +28,3 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew --warning-mode all build -i
-
-
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: deploy
-        uses: appleboy/ssh-action@master
-        with:
-          username: ec2-user
-          host: ${{ secrets.WAS_HOST }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          port: ${{ secrets.WAS_PORT }}
